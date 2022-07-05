@@ -1,0 +1,9 @@
+Print Hello World
+If True {
+print it is true
+} else {
+Print it is false
+}
+
+Var1 is 7
+Print @Var1

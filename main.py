@@ -6,7 +6,7 @@ f=open("code.txt","r")#The code
 lines=f.read().splitlines()#Split it line by line
 keywords=["print","if","else","is"]#All the keywords
 variables={}
-
+conditions=[]
 
 #interpret print
 def iprint(words):
@@ -23,21 +23,15 @@ def iprint(words):
 
 #interpret if
 def iif(words):
-  cond=icondit(words[1])
-  #print(cond)
-  if cond==True:
-    skip=False
-  else:
-    skip=True
-  return skip,cond
+  conditions.append(icondit(words[1]))#Add the condition to the list
+  if conditions[-1]==False:#If the conditioin is false
+    skip=True#Skip the upcoming lines
 
 def ielse(words):
-  if cond==False:
-    skip=False
-  else:
-    skip=True
-  return skip
-      
+  if conditions[-1]==False:#If the condition is false
+    skip=False#Unskip
+  else:#Otherwise
+    skip=True#Skip
 #See if a condition is true or false
 def icondit(condition):
   if condition=="True":
@@ -91,30 +85,38 @@ def ivar(words):
   variables[words[0]]=words[2]
   #print(variables)
 
-skip=False
-i=0
+
+skip=False#Whether of not to skip at line (because it is in an if statement)
+i=0#Line number Off by one error from the line number if the code file
 while i<len(lines):#Line by line interpreted
   words=lines[i].split(" ")#Split the line into words
   words=check(words)#Check for comments
-  #print(words)
-  if skip==True and words[0]=="}":
-    skip=False
-  if skip==False:
-    if len(words)>1:
+  #print(conditions,words,skip)
+  if skip==True:#If you are skipping this line
+    if words[0]=="}":#If this is the end of an 'indent'
+      if len(conditions)>0:#Error checking
+        if conditions[-1]==False:#If the latest condition is false
+          if len(words)>1:#Error checking
+            if words[1]==keywords[2]:#If it is an else statement
+              skip=False#Do not skip it
+              conditions.pop()#Delete the condition
+      else:
+        pass#Error statement
+    if words[0].lower()==keywords[1]:#if it is an if statement
+      conditions.append("Filler")#The code will not be run
+    elif words[0].lower()=="}" and len(words)==1:#If it is the end of the if/else statement
+      if len(conditions)>0:#Error checking
+        conditions.pop()#Delete the condition
+  elif skip==False:#If you are not going to skip the line
+    if len(words)>1:#Error checking
       if words[0].lower()==keywords[0]:#See if its a print statement
         iprint(words)#print
       elif words[0].lower()==keywords[1]:#See if its an if statement
-        skip,cond=iif(words)
-      elif words[1].lower()==keywords[2]:
-        skip=ielse(words)
-      elif words[1].lower()==keywords[3]:
-        ivar(words)
+        iif(words)
+      elif words[1].lower()==keywords[2]:#If it is an else statement
+        ielse(words)
+      elif words[0]=="}" and len(words)==1:#If it is the end
+        conditions.pop()#delete the condition
+      elif words[1].lower()==keywords[3]:#If they are assigning a variable
+        ivar(words)#Assign the variable
   i+=1
-
-#Conditions
-#Repeat until, for, while.
-#Fix multiple if statements.
-#Write code into a python file.
-#Functions
-#Classes
-#Built in functions

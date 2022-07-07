@@ -32,3 +32,21 @@ Syntax:
   variables are referred to as shown below:
   
     print @name
+    
+  numbers are defined as shown below:
+  
+    name isnum value
+   
+   numbers are referred to as shown below:
+   
+    func @name
+  
+   numbers can be added as below:
+   
+    sum isnum add @var1 @var1
+   
+   numbers can be convertewd to strings as shown below:
+   
+    num name str
+   
+   numbers can not be printed and must be converted to strings first

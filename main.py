@@ -4,10 +4,13 @@
 
 f=open("code.txt","r")#The code
 lines=f.read().splitlines()#Split it line by line
-keywords=["print","if","else","is"]#All the keywords
+keywords=["print","if","else","is","isnum","add","num","str"]#All the keywords
 variables={}#Dictionary of variables
+numbers={}
 conditions=[]#List of conditions
 skip=False#Whether of not to skip at line (because it is in an if statement)
+
+
 
 class line:
   def __init__(self,words,skip):
@@ -79,6 +82,22 @@ class line:
     #print(variables)
   
 
+  def inum(self):
+    #print(self.words[2])
+    numbers[self.words[0]]=int(self.words[2])
+  def iadd(self,pos):
+    sum=0
+    for i in range(pos+1,len(self.words)):
+      if words[i][0]!="@":
+        sum+=int(self.words[i])
+      else:
+        index=self.words[i].replace("@","")
+        sum+=numbers[index]
+    return sum
+  def strTOnum(self):
+    index=self.words[1].replace("@","")
+    variables[index]=numbers[index]
+    numbers.pop(index)
   def interpret(self):
     self.words=self.check()#Check for comments
     #print(conditions,words,skip)
@@ -110,6 +129,14 @@ class line:
           conditions.pop()#delete the condition
         elif self.words[1].lower()==keywords[3]:#If they are assigning a variable
           self.ivar()#Assign the variable
+        elif self.words[1].lower()==keywords[4]:#If they are assigning a number
+          if self.words[2].lower()==keywords[5]:#add numbers 
+            index=self.words[0].replace("@","")
+            numbers[index]=self.iadd(2)
+          else:
+            self.inum()
+        elif self.words[0].lower()==keywords[6] and self.words[2]==keywords[7]:
+          self.strTOnum()
     return self.skip
 
 i=0#Line number Off by one error from the line number if the code file

@@ -43,10 +43,21 @@ Syntax:
   
    numbers can be added as below:
    
-    sum isnum add @var1 @var1
+    sum isnum add @name1 @name1
+    sum isnum add number number
    
    numbers can be convertewd to strings as shown below:
    
     num name str
    
    numbers can not be printed and must be converted to strings first
+   
+   comparisions can be made as shown below:
+   
+    @name1 = @name2
+    
+   numbers can be multiplied as shown below:
+   
+    product isnum @name1 @name2
+    
+   

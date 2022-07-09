@@ -4,7 +4,7 @@
 
 f=open("code.txt","r")#The code
 lines=f.read().splitlines()#Split it line by line
-keywords=["print","if","else","is","isnum","add","num","str"]#All the keywords
+keywords=["print","if","else","is","isnum","add","num","str","mult"]#All the keywords
 variables={}#Dictionary of variables
 numbers={}
 conditions=[]#List of conditions
@@ -31,7 +31,7 @@ class line:
   
   #interpret if
   def iif(self):
-    conditions.append(self.icondit())#Add the condition to the list
+    conditions.append(self.icondit(2))#Add the condition to the list
     if conditions[-1]==False:#If the conditioin is false
       self.skip=True#Skip the upcoming lines
   
@@ -41,14 +41,43 @@ class line:
     else:#Otherwise
       self.skip=True#Skip
   #See if a condition is true or false
-  def icondit(self):
-    condition=self.words[1]
-    if condition=="True":
-      condition=True
-    else:
-      condition=False
-    return condition
-  
+  def icondit(self,pos):
+    varnames=variables.keys()#list of variable names
+    numnames=numbers.keys()#list of numbers
+    if words[pos]=="=":#If there is an equals sign
+      if words[pos-1][0]=="@":#If it is a variable/numuber
+        index=words[pos-1].replace("@","")#Get the variable's/number's name
+        if index in varnames:#If it is a variable
+          cond1=variables[index]#Get its value
+        elif index in numnames:#If it is a number
+          cond1=numbers[index]#Get its value
+        else:#If it is neither
+          print("VARIABLE:",index,"not found")#Error message
+      else:#If it is not a variable
+        cond1=words[pos-1]#Use it
+      if words[pos+1][0]=="@":#Same againn
+        index=words[pos+1].replace("@","")
+        if index in varnames:
+          cond2=variables[index]
+        elif index in numnames:
+          cond2=numbers[index]
+        else:
+          print("VARIABLE:",index,"not found")
+      else:
+        cond2=words[pos+1]
+      if cond1==cond2:#If they are the same
+        return True#Condition is true
+      else:
+        return False
+    else:#if true { #or similar
+      #Dummy code
+      condition=self.words[1]
+      if condition=="True":
+        condition=True
+      else:
+        condition=False
+      return condition
+
   #Check for comments and other stuff later on/
   def check(self):
     comment=False#Whether or not it is a comment
@@ -76,7 +105,6 @@ class line:
       i+=1#Check the next one
     return line#Return the commentless line
   
-  #Gets segment of line inbetween semicolons
   def ivar(self):
     variables[self.words[0]]=self.words[2]
     #print(variables)
@@ -94,6 +122,15 @@ class line:
         index=self.words[i].replace("@","")
         sum+=numbers[index]
     return sum
+  def imult(self,pos):
+    prod=1
+    for i in range(pos+1,len(self.words)):
+      if words[i][0]!="@":
+        prod= prod*int(self.words[i])
+      else:
+        index=self.words[i].replace("@","")
+        prod=prod*numbers[index]
+    return prod
   def strTOnum(self):
     index=self.words[1].replace("@","")
     variables[index]=numbers[index]
@@ -133,10 +170,15 @@ class line:
           if self.words[2].lower()==keywords[5]:#add numbers 
             index=self.words[0].replace("@","")
             numbers[index]=self.iadd(2)
+          elif self.words[2].lower()==keywords[8]:#times numbers 
+            index=self.words[0].replace("@","")
+            numbers[index]=self.imult(2)
+            
           else:
             self.inum()
         elif self.words[0].lower()==keywords[6] and self.words[2]==keywords[7]:
           self.strTOnum()
+    #print(words,self.skip)
     return self.skip
 
 i=0#Line number Off by one error from the line number if the code file

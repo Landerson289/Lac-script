@@ -41,12 +41,29 @@ Syntax:
    
     func @name
   
-   numbers can be added as below:
+   To do a mathmatical operation, use one of the keywords, "add","sub","mult","div" as shown below.
    
-    sum isnum add @name1 @name1
-    sum isnum add number number
+    sum isnum keyword @name1 @name1
+    sum isnum keyword number number
+    
+   Addition and multiplication are the same regardless of the order
+   With subtraction the order is as below:
    
-   numbers can be convertewd to strings as shown below:
+    sub @var1 @var2 @var3
+    
+   corresponds to:
+   
+    @var1-@var2-@var3
+    
+   and with division:
+   
+    div @Var1 @var2 @var3
+   
+   corresponds to:
+   
+    (@var1/@var2)/@var3
+   
+   numbers can be converted to strings as shown below:
    
     num name str
    
@@ -54,10 +71,10 @@ Syntax:
    
    comparisions can be made as shown below:
    
-    @name1 = @name2
-    
-   numbers can be multiplied as shown below:
+    @name1 equals @name2
    
-    product isnum @name1 @name2
+   brackets can be used to get a value from a section of the code that can be used in the code.
+   
+    @var1 equals (add @var1 @var2)
     
    
